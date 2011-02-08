@@ -1,62 +1,53 @@
-(function () {
+(function (global) {
 
-if (typeof window.DOMTokenList !== 'undefined') return;
+if (typeof global.DOMTokenList !== 'undefined') return;
 
-var indexOf = [].indexOf,
-    slice = [].slice,
-    push = [].push,
-    splice = [].splice,
-    join = [].join;
-
-function DOMTokenList(el) {  
+function DOMTokenList(el) {
   this._element = el;
-  if (el.className != this.classCache) {
-    this._classCache = el.className;
-    
-    var classes = this._classCache.split(' '),
-        i;
-    for (i = 0; i < classes.length; i++) {
-      push.call(this, classes[i]);
-    }
-  }
+  this.push.apply(this, el.className.split(regex));
 };
 
 function setToClassName(el, classes) {
   el.className = classes.join(' ');
 }
 
-DOMTokenList.prototype = {
-  add: function(token) {
-    push.call(this, token);
-    setToClassName(this._element, slice.call(this, 0));
-  },
-  contains: function(token) {
-    return indexOf.call(this, token) !== -1;
-  },
-  item: function(index) {
-    return this[index] || null;
-  },
-  remove: function(token) {
-    var i = indexOf.call(this, token);
-    splice.call(this, i, 1);
-    setToClassName(this._element, slice.call(this, 0));
-  },
-  toString: function() {
-    return join.call(this, ' ');
-  },
-  toggle: function(token) {
-    if (indexOf.call(this, token) === -1) {
-      this.add(token);
-    } else {
-      this.remove(token);
+var
+  key
+  ,regex = /\s+/g
+  ,methods = {
+    add: function(token) {
+      this.push(token);
+      setToClassName(this._element, this);
+    },
+    contains: function(token) {
+      return this.indexOf(token) != -1;
+    },
+    item: function(index) {
+      return this[index] || null;
+    },
+    remove: function(token) {
+      this.splice(this.indexOf(token), 1);
+      setToClassName(this._element, this);
+    },
+    toString: function() {
+      return this.join(' ');
+    },
+    toggle: function(token) {
+      this[this.indexOf(token) == -1 ? 'add' : 'remove'](token);
     }
   }
-};
+;
 
-window.DOMTokenList = DOMTokenList;
+// IE doesn't maintain the length of subclassed arrays but we don't need it
+DOMTokenList.prototype = new Array;
+
+for (key in methods) {
+  DOMTokenList.prototype[key] = methods[key];
+}
+global.DOMTokenList = DOMTokenList;
 
 Element.prototype.__defineGetter__('classList', function () {
   return new DOMTokenList(this);
 });
 
-})();
+})(this);
