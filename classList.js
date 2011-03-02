@@ -1,6 +1,6 @@
 (function () {
 
-if (typeof window.DOMTokenList !== 'undefined') return;
+if (typeof Element === "undefined" || Element.prototype.hasOwnProperty("classList")) return;
 
 var indexOf = [].indexOf,
     slice = [].slice,
