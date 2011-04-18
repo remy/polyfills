@@ -1,4 +1,4 @@
-// TODO handle those browsers that natively handle offline events (like Firefox via Work Offline)
+// Working demo: http://jsbin.com/ozusa6/2/
 (function () {
 
 function triggerEvent(type) {
