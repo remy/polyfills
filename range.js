@@ -61,7 +61,7 @@ if (bool) {
      i = 0;
 
   for (; i < selects.length; i++) {
-    if (selects[i].getAttribute('type') == 'range') (function (select) {
+    if (selects[i].getAttribute('data-type') == 'range') (function (select) {
       var range = document.createElement('input'),
           parent = select.parentNode;
           
