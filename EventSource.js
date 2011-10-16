@@ -120,7 +120,7 @@ EventSource.prototype = {
     var handlers = this['_' + type + 'Handlers'];
     if (handlers) {
       for (var i = 0; i < handlers.length; i++) {
-        handlers.call(this, event);
+        handlers[i].call(this, event);
       }      
     }
     
