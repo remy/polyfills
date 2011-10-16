@@ -1,6 +1,6 @@
 ;(function (global) {
 
-if ("EventSource" in window) return;
+if ("EventSource" in global) return;
 
 var reTrim = /^(\s|\u00A0)+|(\s|\u00A0)+$/g;
 
@@ -52,6 +52,7 @@ var EventSource = function (url) {
         
           // process this.responseText
           var parts = this.responseText.substr(cache.length).split("\n"),
+              eventType = 'message',
               data = [],
               i = 0,
               line = '';
@@ -61,7 +62,9 @@ var EventSource = function (url) {
           // TODO handle 'event' (for buffer name), retry
           for (; i < parts.length; i++) {
             line = parts[i].replace(reTrim, '');
-            if (line.indexOf('data') == 0) {
+            if (line.indexOf('event') == 0) {
+              eventType = line.replace(/event:?\s*/, '');
+            } else if (line.indexOf('data') == 0) {
               data.push(line.replace(/data:?\s*/, ''));
             } else if (line.indexOf('id:') == 0) {
               lastEventId = line.replace(/id:?\s*/, '');
@@ -70,7 +73,7 @@ var EventSource = function (url) {
             } else if (line == '') {
               if (data.length) {
                 var event = new MessageEvent(data.join('\n'), eventsource.url, lastEventId);
-                eventsource.dispatchEvent('message', event);
+                eventsource.dispatchEvent(eventType, event);
                 data = [];
               }
             }
@@ -121,9 +124,9 @@ EventSource.prototype = {
     if (handlers) {
       for (var i = 0; i < handlers.length; i++) {
         handlers[i].call(this, event);
-      }      
+      }
     }
-    
+
     if (this['on' + type]) {
       this['on' + type].call(this, event);
     }
