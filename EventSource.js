@@ -75,6 +75,7 @@ var EventSource = function (url) {
                 var event = new MessageEvent(data.join('\n'), eventsource.url, lastEventId);
                 eventsource.dispatchEvent(eventType, event);
                 data = [];
+                eventType = 'message';
               }
             }
           }
