@@ -28,12 +28,12 @@ var EventSource = function (url) {
   function poll() {
     try { // force hiding of the error message... insane?
       if (eventsource.readyState == eventsource.CLOSED) return;
-      
+
+      // NOTE: IE7 and upwards support
       var xhr = new XMLHttpRequest();
       xhr.open('GET', eventsource.URL, true);
       xhr.setRequestHeader('Accept', 'text/event-stream');
       xhr.setRequestHeader('Cache-Control', 'no-cache');
-    
       // we must make use of this on the server side if we're working with Android - because they don't trigger 
       // readychange until the server connection is closed
       xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -49,15 +49,20 @@ var EventSource = function (url) {
             eventsource.readyState = eventsource.OPEN;
             eventsource.dispatchEvent('open', { type: 'open' });
           }
+
+          var responseText = '';
+          try {
+            responseText = this.responseText || '';
+          } catch (e) {}
         
           // process this.responseText
-          var parts = this.responseText.substr(cache.length).split("\n"),
+          var parts = responseText.substr(cache.length).split("\n"),
               eventType = 'message',
               data = [],
               i = 0,
               line = '';
             
-          cache = this.responseText;
+          cache = responseText;
         
           // TODO handle 'event' (for buffer name), retry
           for (; i < parts.length; i++) {
@@ -90,7 +95,8 @@ var EventSource = function (url) {
             pollAgain();
           } else if (this.readyState == 0) { // likely aborted
             pollAgain();
-          }          
+          } else {
+          }
         }
       };
     
