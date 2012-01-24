@@ -10,7 +10,7 @@
 (!document.DeviceOrientationEvent || !document.DeviceMotionEvent) && (function () {
 
 // thankfully we don't have to do anything, because the event only fires on the window object
-var polyfil = {
+var polyfill = {
   motion: !document.DeviceMotionEvent,
   orientation: !document.DeviceOrientationEvent
 };
