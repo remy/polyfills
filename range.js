@@ -79,6 +79,10 @@ if (bool) {
       range.min = firstChild(select, 'option').value;
       range.max = lastChild(select, 'option').value;
       range.value = select.value;
+      // Add step support
+      if ( select.getAttribute('data-type-range-step') ) {
+        range.step = select.getAttribute('data-type-range-step');
+      }
       // yeah, this is filth, but it's because getElementsByTagName is
       // a live DOM collection, so when we removed the select element
       // the selects object reduced in length. Freaky, eh?
