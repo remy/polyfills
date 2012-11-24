@@ -55,8 +55,18 @@ DOMTokenList.prototype = {
 
 window.DOMTokenList = DOMTokenList;
 
-Element.prototype.__defineGetter__('classList', function () {
-  return new DOMTokenList(this);
+function defineElementGetter (obj, prop, getter) {
+	if (Object.defineProperty) {
+		Object.defineProperty(obj, prop,{
+			get : getter
+		})
+	} else {					
+		obj.__defineGetter__(prop, getter);
+	}
+}
+
+defineElementGetter(Element.prototype, 'classList', function () {
+  return new DOMTokenList(this);			
 });
 
 })();
