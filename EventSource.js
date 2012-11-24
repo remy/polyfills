@@ -19,7 +19,7 @@ var EventSource = function (url) {
   this._pollTimer = null;
   this._xhr = null;
   
-  function pollAgain() {
+  function pollAgain(interval) {
     eventsource._pollTimer = setTimeout(function () {
       poll.call(eventsource);
     }, interval);
@@ -69,6 +69,9 @@ var EventSource = function (url) {
             line = parts[i].replace(reTrim, '');
             if (line.indexOf('event') == 0) {
               eventType = line.replace(/event:?\s*/, '');
+            } else if (line.indexOf('retry') == 0) {                           
+              retry = parseInt(line.replace(/retry:?\s*/, ''));
+              if(!isNaN(retry)) { interval = retry; }
             } else if (line.indexOf('data') == 0) {
               data.push(line.replace(/data:?\s*/, ''));
             } else if (line.indexOf('id:') == 0) {
@@ -85,16 +88,16 @@ var EventSource = function (url) {
             }
           }
 
-          if (this.readyState == 4) pollAgain();
+          if (this.readyState == 4) pollAgain(interval);
           // don't need to poll again, because we're long-loading
         } else if (eventsource.readyState !== eventsource.CLOSED) {
           if (this.readyState == 4) { // and some other status
             // dispatch error
             eventsource.readyState = eventsource.CONNECTING;
             eventsource.dispatchEvent('error', { type: 'error' });
-            pollAgain();
+            pollAgain(interval);
           } else if (this.readyState == 0) { // likely aborted
-            pollAgain();
+            pollAgain(interval);
           } else {
           }
         }
