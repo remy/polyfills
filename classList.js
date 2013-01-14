@@ -38,6 +38,9 @@ DOMTokenList.prototype = {
   },
   remove: function(token) {
     var i = indexOf.call(this, token);
+     if (i === -1) {
+       return;
+     }
     splice.call(this, i, 1);
     setToClassName(this._element, slice.call(this, 0));
   },
