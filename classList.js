@@ -2,17 +2,21 @@
 
 if (typeof Element === "undefined" || Element.prototype.hasOwnProperty("classList")) return;
 
-var indexOf = [].indexOf,
-    slice = [].slice,
-    push = [].push,
-    splice = [].splice,
-    join = [].join;
+var prototype = Array.prototype,
+    indexOf = prototype.indexOf,
+    slice = prototype.slice,
+    push = prototype.push,
+    splice = prototype.splice,
+    join = prototype.join;
 
 function DOMTokenList(el) {  
   this._element = el;
-  if (el.className != this.classCache) {
+  if (el.className != this._classCache) {
     this._classCache = el.className;
-    
+
+    if (!this._classCache) return;
+
+ 	
     var classes = this._classCache.split(' '),
         i;
     for (i = 0; i < classes.length; i++) {
@@ -27,6 +31,7 @@ function setToClassName(el, classes) {
 
 DOMTokenList.prototype = {
   add: function(token) {
+    if (indexOf.call(this, token)) return;
     push.call(this, token);
     setToClassName(this._element, slice.call(this, 0));
   },
