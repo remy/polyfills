@@ -27,6 +27,7 @@ function setToClassName(el, classes) {
 
 DOMTokenList.prototype = {
   add: function(token) {
+    if(this.contains(token)) return;
     push.call(this, token);
     setToClassName(this._element, slice.call(this, 0));
   },
