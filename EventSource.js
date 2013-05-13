@@ -148,8 +148,17 @@ EventSource.prototype = {
     
     this['_' + type + 'Handlers'].push(handler);
   },
-  removeEventListener: function () {
-    // TODO
+  removeEventListener: function (type, handler) {
+    var handlers = this['_' + type + 'Handlers'];
+    if (!handlers) {
+      return;
+    }
+    for (var i = handlers.length - 1; i >= 0; --i) {
+      if (handlers[i] === handler) {
+        handlers.splice(i, 1);
+        break;
+      }
+    }
   },
   onerror: null,
   onmessage: null,
