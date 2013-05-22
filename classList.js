@@ -1,6 +1,6 @@
 (function () {
 
-if (typeof Element === "undefined" || "classList" in document.documentElement) return;
+if (typeof window.Element === "undefined" || "classList" in document.documentElement) return;
 
 var indexOf = [].indexOf,
     slice = [].slice,
