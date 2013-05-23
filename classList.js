@@ -10,7 +10,7 @@ var indexOf = [].indexOf,
 
 function DOMTokenList(el) {  
   this._element = el;
-  if (el.className != this.classCache) {
+  if (el.className != this._classCache) {
     this._classCache = el.className;
     
     var classes = this._classCache.split(' '),
