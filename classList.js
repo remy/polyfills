@@ -13,7 +13,9 @@ function DOMTokenList(el) {
   if (el.className != this._classCache) {
     this._classCache = el.className;
     
-    var classes = this._classCache.split(' '),
+      // The className needs to be trimmed and split on whitespace
+      // to retrieve a list of classes.
+      var classes = this._classCache.replace(/^\s+|\s+$/g,'').split(/\s+/),
         i;
     for (i = 0; i < classes.length; i++) {
       push.call(this, classes[i]);
@@ -27,6 +29,7 @@ function setToClassName(el, classes) {
 
 DOMTokenList.prototype = {
   add: function(token) {
+    if(this.contains(token)) return;
     push.call(this, token);
     setToClassName(this._element, slice.call(this, 0));
   },
