@@ -43,7 +43,7 @@ var EventSource = function (url) {
     
       xhr.timeout = 50000;
       xhr.onreadystatechange = function () {
-        if ((this.readyState == 3 || this.readyState == 4) && this.status == 200) {
+        if (this.readyState == 3 || (this.readyState == 4 && this.status == 200)) {
           // on success
           if (eventsource.readyState == eventsource.CONNECTING) {
             eventsource.readyState = eventsource.OPEN;
