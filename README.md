@@ -6,7 +6,7 @@ This is my own collection of code snippets that support different native feature
 
 ## Component Installation
 
-You can instoll polyfills using component:
+You can install polyfills using component:
 
 ```
 component install remy/polyfills
