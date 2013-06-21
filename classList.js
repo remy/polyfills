@@ -54,11 +54,13 @@ DOMTokenList.prototype = {
     return join.call(this, ' ');
   },
   toggle: function(token) {
-    if (indexOf.call(this, token) === -1) {
+    if (!this.contains(token)) {
       this.add(token);
     } else {
       this.remove(token);
     }
+
+    return this.contains(token);
   }
 };
 
