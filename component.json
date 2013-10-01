@@ -8,6 +8,7 @@
     "EventSource.js",
     "index.js",
     "input-target.js",
+    "keys.js",
     "offline-events.js",
     "range.js",
     "sessionStorage.js",
