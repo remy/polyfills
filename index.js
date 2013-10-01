@@ -1,3 +1,4 @@
+require( "./array.js" );
 require( "./classList.js" );
 require( "./dataset.js" );
 require( "./EventSource.js" );

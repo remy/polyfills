@@ -1,6 +1,7 @@
 {
   "name": "polyfills",
   "scripts": [
+    "array.js",
     "classList.js",
     "dataset.js",
     "device-motion-polyfill.js",
