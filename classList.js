@@ -2,6 +2,16 @@
 
 if (typeof window.Element === "undefined" || "classList" in document.documentElement) return;
 
+// adds indexOf to Array prototype for IE support
+if (!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function(obj, start) {
+        for (var i = (start || 0), j = this.length; i < j; i++) {
+            if (this[i] === obj) { return i; }
+        }
+        return -1;
+    }
+}
+
 var prototype = Array.prototype,
     indexOf = prototype.indexOf,
     slice = prototype.slice,
