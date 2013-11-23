@@ -79,6 +79,7 @@ if (bool) {
       range.min = firstChild(select, 'option').value;
       range.max = lastChild(select, 'option').value;
       range.value = select.value;
+      range.name = select.name;
       // Add step support
       if ( select.getAttribute('data-type-range-step') ) {
         range.step = select.getAttribute('data-type-range-step');
