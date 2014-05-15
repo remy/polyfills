@@ -11,7 +11,7 @@
         "name": "Remy Sharp",
         "email": "remy@leftlogic.com"
     },
-    "version": "0.0.20130621",
+    "version": "0.0.201405155555",
     "readme": "This is my own collection of code snippets that support different native features of browsers using JavaScript (and if required, Flash in some cases).",
     "readmeFilename": "README.md",
     "_id": "html5-polyfills@0.0.20130621",
