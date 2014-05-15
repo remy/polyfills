@@ -5,7 +5,6 @@ require( "./dataset.js" );
 require( "./EventSource.js" );
 require( "./input-target.js" );
 require( "./keys.js" );
-require( "./offline-events.js" );
 require( "./range.js" );
 require( "./sessionStorage.js" );
 require( "./Storage.js" );
