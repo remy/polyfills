@@ -1,6 +1,8 @@
 {
   "name": "polyfills",
+  "version": "0.0.20140514",
   "scripts": [
+    "addEventListener.js",
     "array.js",
     "classList.js",
     "dataset.js",
