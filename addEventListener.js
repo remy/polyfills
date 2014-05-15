@@ -17,7 +17,7 @@
         return obj;
     }
 
-    addListen([document, windown]);
+    addListen([document, window]);
     if('Element' in window)window.Element.prototype.addEventListener = addEvent;            //IE8
     else{                                                                            //IE < 8
         document.attachEvent('onreadystatechange', function(){addListen(document.all)});        //Make sure we also init at domReady
