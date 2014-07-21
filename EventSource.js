@@ -83,7 +83,7 @@ var EventSource = function (url) {
               lastEventId = null;
             } else if (line == '') {
               if (data.length) {
-                var event = new MessageEvent(data.join('\n'), eventsource.url, lastEventId);
+                var event = new MessageEvent(eventType, data.join('\n'), eventsource.url, lastEventId);
                 eventsource.dispatchEvent(eventType, event);
                 data = [];
                 eventType = 'message';
@@ -171,7 +171,8 @@ EventSource.prototype = {
   URL: ''
 };
 
-var MessageEvent = function (data, origin, lastEventId) {
+var MessageEvent = function (eventType, data, origin, lastEventId) {
+  this.type = eventType;
   this.data = data;
   this.origin = origin;
   this.lastEventId = lastEventId || '';
