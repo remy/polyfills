@@ -19,8 +19,12 @@ function DOMTokenList(el) {
 
 DOMTokenList.prototype = {
   add: function(token) {
-    if(this.contains(token)) return;
-    push.call(this, token);
+    for (var i = 0, len = arguments.length; i < len; i++) {
+        token = arguments[i];
+        if (!this.contains(token)) {
+            push.call(this, token);
+        }
+    }
     this.el.className = this.toString();
   },
   contains: function(token) {
@@ -30,11 +34,15 @@ DOMTokenList.prototype = {
     return this[index] || null;
   },
   remove: function(token) {
-    if (!this.contains(token)) return;
-    for (var i = 0; i < this.length; i++) {
-      if (this[i] == token) break;
+    for (var i = 0, len = arguments.length; i < len; i++) {
+        token = arguments[i];
+        if (this.contains(token)) {
+            for (var i = 0; i < this.length; i++) {
+               if (this[i] === token) break;
+            }
+            splice.call(this, i, 1);
+        }
     }
-    splice.call(this, i, 1);
     this.el.className = this.toString();
   },
   toString: function() {
