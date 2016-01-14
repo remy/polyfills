@@ -14,13 +14,13 @@ component install remy/polyfills
 
 If you'd like to include all polyfills (except device motion), you can just:
 
-```
+```javascript
 require( 'polyfills' );
 ```
 
 If you'd only like a specific polyfill, you can require indivual ones like this:
 
-```
+```javascript
 require( 'polyfills/classList' );
 
 // now we can use classList in lots of browsers!
