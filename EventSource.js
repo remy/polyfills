@@ -18,8 +18,7 @@ var EventSource = function (url) {
       interval = 500, // polling interval  
       lastEventId = null,
       chars_processed = 0, // chars_processed and last_length used to efficiently handle long messages
-      last_length = 0,
-      parts = [];
+      last_length = 0;
 
   if (!url || typeof url != 'string') {
     throw new SyntaxError('Not enough arguments');
