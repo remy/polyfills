@@ -1,3 +1,12 @@
+// startsWith is more efficient than indexOf esp for repeated execution over data of increasing size
+// create String.startsWith() if it doesn't already exist
+if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function(searchString, position){
+      position = position || 0;
+      return this.substr(position, searchString.length) === searchString;
+  };
+}
+
 ;(function (global) {
 
 if ("EventSource" in global) return;
@@ -8,7 +17,9 @@ var EventSource = function (url) {
   var eventsource = this,  
       interval = 500, // polling interval  
       lastEventId = null,
-      cache = '';
+      chars_processed = 0, // chars_processed and last_length used to efficiently handle long messages
+      last_length = 0,
+      parts = [];
 
   if (!url || typeof url != 'string') {
     throw new SyntaxError('Not enough arguments');
@@ -24,7 +35,7 @@ var EventSource = function (url) {
       poll.call(eventsource);
     }, interval);
   }
-  
+
   function poll() {
     try { // force hiding of the error message... insane?
       if (eventsource.readyState == eventsource.CLOSED) return;
@@ -39,9 +50,11 @@ var EventSource = function (url) {
       xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
       if (lastEventId != null) xhr.setRequestHeader('Last-Event-ID', lastEventId);
-      cache = '';
+      
+      chars_processed = last_length = 0;
     
       xhr.timeout = 50000;
+
       xhr.onreadystatechange = function () {
         if (this.readyState == 3 || (this.readyState == 4 && this.status == 200)) {
           // on success
@@ -54,36 +67,47 @@ var EventSource = function (url) {
           try {
             responseText = this.responseText || '';
           } catch (e) {}
-        
+
           // process this.responseText
-          var parts = responseText.substr(cache.length).split("\n"),
-              eventType = 'message',
-              data = [],
-              i = 0,
-              line = '';
+
+          // use last_length to avoid exponentially-increasing performance time as data size increases
+          var might_have_message_to_send = (responseText.substr(last_length).indexOf("\n") != -1);
+	  
+          last_length = responseText.length;
+
+          if(might_have_message_to_send) {
+            var parts = responseText.substr(chars_processed).split("\n"),
+                eventType = 'message',
+                data = [],
+                i = 0,
+                line = '';
             
-          cache = responseText;
-        
-          // TODO handle 'event' (for buffer name), retry
-          for (; i < parts.length; i++) {
-            line = parts[i].replace(reTrim, '');
-            if (line.indexOf('event') == 0) {
-              eventType = line.replace(/event:?\s*/, '');
-            } else if (line.indexOf('retry') == 0) {                           
-              retry = parseInt(line.replace(/retry:?\s*/, ''));
-              if(!isNaN(retry)) { interval = retry; }
-            } else if (line.indexOf('data') == 0) {
-              data.push(line.replace(/data:?\s*/, ''));
-            } else if (line.indexOf('id:') == 0) {
-              lastEventId = line.replace(/id:?\s*/, '');
-            } else if (line.indexOf('id') == 0) { // this resets the id
-              lastEventId = null;
-            } else if (line == '') {
-              if (data.length) {
-                var event = new MessageEvent(data.join('\n'), eventsource.url, lastEventId);
-                eventsource.dispatchEvent(eventType, event);
-                data = [];
-                eventType = 'message';
+            var temp_chars_processed = 0;
+            
+            // TODO handle 'event' (for buffer name), retry
+            for (; i < parts.length; i++) {
+              line = parts[i].replace(reTrim, '');
+              temp_chars_processed += line.length + (i + 1 == parts.length ? 0 : 1);
+              if (line.startsWith('event')) {
+                eventType = line.replace(/event:?\s*/, '');
+              } else if (line.startsWith('retry')) {
+                retry = parseInt(line.replace(/retry:?\s*/, ''));
+                if(!isNaN(retry)) { interval = retry; }
+              } else if (line.startsWith('data')) {
+                data.push(line.replace(/data:?\s*/, ''));
+              } else if (line.startsWith('id:')) {
+                lastEventId = line.replace(/id:?\s*/, '');
+              } else if (line.startsWith('id')) { // this resets the id
+                lastEventId = null;
+              } else if (line == '') {
+                if (data.length) {
+                  var event = new MessageEvent(data.join('\n'), eventsource.url, lastEventId);
+                  eventsource.dispatchEvent(eventType, event);
+                  data = [];
+                  eventType = 'message';
+                  chars_processed += temp_chars_processed;
+                  last_length = 0;
+                }
               }
             }
           }
@@ -98,7 +122,6 @@ var EventSource = function (url) {
             pollAgain(interval);
           } else if (this.readyState == 0) { // likely aborted
             pollAgain(interval);
-          } else {
           }
         }
       };
