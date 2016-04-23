@@ -14,7 +14,7 @@ var EventSource = function (url) {
     throw new SyntaxError('Not enough arguments');
   }
 
-  this.URL = url;
+  this.url = url;
   this.readyState = this.CONNECTING;
   this._pollTimer = null;
   this._xhr = null;
@@ -31,7 +31,7 @@ var EventSource = function (url) {
 
       // NOTE: IE7 and upwards support
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', eventsource.URL, true);
+      xhr.open('GET', eventsource.url, true);
       xhr.setRequestHeader('Accept', 'text/event-stream');
       xhr.setRequestHeader('Cache-Control', 'no-cache');
       // we must make use of this on the server side if we're working with Android - because they don't trigger 
@@ -80,7 +80,7 @@ var EventSource = function (url) {
               lastEventId = null;
             } else if (line == '') {
               if (data.length) {
-                var event = new MessageEvent(data.join('\n'), eventsource.URL, lastEventId);
+                var event = new MessageEvent(data.join('\n'), eventsource.url, lastEventId);
                 eventsource.dispatchEvent(eventType, event);
                 data = [];
                 eventType = 'message';
@@ -164,7 +164,7 @@ EventSource.prototype = {
   onmessage: null,
   onopen: null,
   readyState: 0,
-  URL: ''
+  url: ''
 };
 
 var MessageEvent = function (data, origin, lastEventId) {
