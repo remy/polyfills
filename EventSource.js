@@ -80,7 +80,7 @@ var EventSource = function (url) {
               lastEventId = null;
             } else if (line == '') {
               if (data.length) {
-                var event = new MessageEvent(data.join('\n'), eventsource.url, lastEventId);
+                var event = new MessageEvent(data.join('\n'), eventsource.URL, lastEventId);
                 eventsource.dispatchEvent(eventType, event);
                 data = [];
                 eventType = 'message';
