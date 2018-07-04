@@ -70,7 +70,7 @@ var EventSource = function (url) {
             if (line.indexOf('event') == 0) {
               eventType = line.replace(/event:?\s*/, '');
             } else if (line.indexOf('retry') == 0) {                           
-              retry = parseInt(line.replace(/retry:?\s*/, ''));
+              var retry = parseInt(line.replace(/retry:?\s*/, ''));
               if(!isNaN(retry)) { interval = retry; }
             } else if (line.indexOf('data') == 0) {
               data.push(line.replace(/data:?\s*/, ''));
