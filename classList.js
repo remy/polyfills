@@ -15,7 +15,7 @@ function DOMTokenList(el) {
   for (var i = 0; i < classes.length; i++) {
     push.call(this, classes[i]);
   }
-};
+}
 
 DOMTokenList.prototype = {
   add: function(token) {
