@@ -1,0 +1,30 @@
+{
+  "name": "html5-polyfills",
+  "version": "0.0.20130621",
+  "description": "Collection of polyfills by Remy Sharp",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/remy/polyfills.git"
+  },
+  "keywords": [
+    "polyfill",
+    "client",
+    "browser"
+  ],
+  "author": {
+    "name": "Remy Sharp",
+    "email": "remy@leftlogic.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/remy/polyfills/issues"
+  },
+  "homepage": "https://github.com/remy/polyfills#readme"
+}
