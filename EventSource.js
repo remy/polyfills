@@ -8,6 +8,7 @@ var EventSource = function (url) {
   var eventsource = this,  
       interval = 500, // polling interval  
       lastEventId = null,
+      untreatedLines = [],
       cache = '';
 
   if (!url || typeof url != 'string') {
@@ -56,7 +57,7 @@ var EventSource = function (url) {
           } catch (e) {}
         
           // process this.responseText
-          var parts = responseText.substr(cache.length).split("\n"),
+          var parts = (untreatedLines.join('\n') + responseText.substr(cache.length)).split("\n"),
               eventType = 'message',
               data = [],
               i = 0,
@@ -66,7 +67,9 @@ var EventSource = function (url) {
         
           // TODO handle 'event' (for buffer name), retry
           for (; i < parts.length; i++) {
-            line = parts[i].replace(reTrim, '');
+            var part = parts[i];
+            untreatedLines.push(part);
+            line = part.replace(reTrim, '');
             if (line.indexOf('event') == 0) {
               eventType = line.replace(/event:?\s*/, '');
             } else if (line.indexOf('retry') == 0) {                           
@@ -80,10 +83,11 @@ var EventSource = function (url) {
               lastEventId = null;
             } else if (line == '') {
               if (data.length) {
-                var event = new MessageEvent(data.join('\n'), eventsource.url, lastEventId);
+                var event = new MessageEvent(eventType, data.join('\n'), eventsource.url, lastEventId);
                 eventsource.dispatchEvent(eventType, event);
                 data = [];
                 eventType = 'message';
+                untreatedLines = [];
               }
             }
           }
@@ -167,7 +171,8 @@ EventSource.prototype = {
   URL: ''
 };
 
-var MessageEvent = function (data, origin, lastEventId) {
+var MessageEvent = function (eventType, data, origin, lastEventId) {
+  this.type = eventType;
   this.data = data;
   this.origin = origin;
   this.lastEventId = lastEventId || '';
