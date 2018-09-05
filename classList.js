@@ -5,7 +5,8 @@ if (typeof window.Element === "undefined" || "classList" in document.documentEle
 var prototype = Array.prototype,
     push = prototype.push,
     splice = prototype.splice,
-    join = prototype.join;
+    join = prototype.join,
+    indexOf = prototype.indexOf;
 
 function DOMTokenList(el) {
   this.el = el;
@@ -24,7 +25,7 @@ DOMTokenList.prototype = {
     this.el.className = this.toString();
   },
   contains: function(token) {
-    return this.el.className.indexOf(token) != -1;
+    return indexOf.call(this, token) != -1;
   },
   item: function(index) {
     return this[index] || null;
