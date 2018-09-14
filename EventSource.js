@@ -6,7 +6,6 @@ var reTrim = /^(\s|\u00A0)+|(\s|\u00A0)+$/g;
 
 var EventSource = function (url) {
   var eventsource = this,  
-      interval = 500, // polling interval  
       lastEventId = null,
       cache = '';
 
@@ -22,7 +21,7 @@ var EventSource = function (url) {
   function pollAgain(interval) {
     eventsource._pollTimer = setTimeout(function () {
       poll.call(eventsource);
-    }, interval);
+    }, eventsource.interval);
   }
   
   function poll() {
@@ -78,9 +77,11 @@ var EventSource = function (url) {
               lastEventId = line.replace(/id:?\s*/, '');
             } else if (line.indexOf('id') == 0) { // this resets the id
               lastEventId = null;
+            } else if (line.indexOf('retry') == 0) {
+              eventsource.interval = line.replace(/retry:?\s*/, '');
             } else if (line == '') {
               if (data.length) {
-                var event = new MessageEvent(data.join('\n'), eventsource.url, lastEventId);
+                var event = new MessageEvent(data.join('\n'), eventsource.url, lastEventId, eventType);
                 eventsource.dispatchEvent(eventType, event);
                 data = [];
                 eventType = 'message';
@@ -164,13 +165,15 @@ EventSource.prototype = {
   onmessage: null,
   onopen: null,
   readyState: 0,
-  URL: ''
+  URL: '',
+  interval: 3000 // polling interval
 };
 
-var MessageEvent = function (data, origin, lastEventId) {
+var MessageEvent = function (data, origin, lastEventId, type) {
   this.data = data;
   this.origin = origin;
   this.lastEventId = lastEventId || '';
+  this.type = type;
 };
 
 MessageEvent.prototype = {
