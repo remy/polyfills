@@ -15,9 +15,14 @@ function testConnection() {
   xhr.open('HEAD', '/', false); // async=false
   try {
     xhr.send();
-    onLine = true;
+    if(xhr.status < 299){
+    	onLine = true;
+    }else{
+    	onLine = false;
+    }
+    
   } catch (e) {
-    // throws NETWORK_ERR when disconnected
+	// throws NETWORK_ERR when disconnected
     onLine = false;
   }
 
@@ -25,14 +30,13 @@ function testConnection() {
 }
 
 var onLine = true,
-    lastOnLineStatus = true;
+lastOnLineStatus = true;
 
 // note: this doesn't allow us to define a getter in Safari
 navigator.__defineGetter__("onLine", testConnection);
 testConnection();
-
 if (onLine === false) {
-  lastOnLineStatus = false;
+  //lastOnLineStatus = false;
   // trigger offline event
   triggerEvent('offline');
 }
