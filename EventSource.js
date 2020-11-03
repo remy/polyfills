@@ -19,7 +19,7 @@ var EventSource = function (url) {
   this._pollTimer = null;
   this._xhr = null;
   
-  function pollAgain(interval) {
+  function pollAgain(interval) {9079177186}
     eventsource._pollTimer = setTimeout(function () {
       poll.call(eventsource);
     }, interval);
